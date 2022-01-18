@@ -22,8 +22,22 @@ def movies_list(request):
             return Response(serializer.errors)
             
 
-@api_view()
+@api_view(['GET','PUT','DELETE'])
 def movies_details(request, pk): 
-    movies = Movie.objects.get(pk=pk)
-    serializer = MovieSerializer(movies)
-    return Response(serializer.data)
+    if request.method == "GET":
+        movies = Movie.objects.get(pk=pk)
+        serializer = MovieSerializer(movies)
+        return Response(serializer.data)
+    
+    if request_method == "PUT":
+        movies = Movie.objects.get(pk=pk)
+        # in order to update u need to pass the id so respective value is updated
+        serializer = MovieSerializer(movies, request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+            
+    if request.method == "DELETE":
+        pass
