@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from watchlist_app.models import Watchlist, StreamPlatform
 
+class StreamPlatformSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StreamPlatform
+        fields = "__all__"
 
 class WatchlistSerializer(serializers.ModelSerializer):
     #SerializerMethodField helps to add a serializer method without updating the model or any other fields
@@ -28,8 +32,3 @@ class WatchlistSerializer(serializers.ModelSerializer):
     #         raise serializers.ValidationError("Name is too short")
     #     else:
     #         return value
-
-class StreamPlatformSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StreamPlatform
-        fields = "__all__"
