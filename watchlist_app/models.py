@@ -21,4 +21,4 @@ class Watchlist(models.Model):
     # type = models.CharField(choices=TYPE_CHOICES, max_length=20)
     
     def __str__(self):
-        return self.name
+        return self.title

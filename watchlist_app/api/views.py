@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from django.shortcuts import render
 from watchlist_app.models import Watchlist, StreamPlatform
-from watchlist_app.api.serializers import WatchlistSerializer
+from watchlist_app.api.serializers import WatchlistSerializer, StreamPlatformSerializer
 from django.http import JsonResponse
 
 class StreamPlatformAV(APIView):
@@ -19,7 +19,30 @@ class StreamPlatformAV(APIView):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class StreamPlatformDetailsAV(APIView):
+    def get(self, request, pk):
+        try:
+            platform = StreamPlatform.objects.get(pk=pk)
+        except PlatformNotFound:
+            return Response({'Error': 'Platform Details not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = StreamPlatformSerializer(platform)
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        platform = StreamPlatform.objects.get(pk=pk)
+        serializer = StreamPlatformSerializer(platform, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self,request, pk):
+        platform = StreamPlatform.objects.get(pk=pk)
+        platform.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class WatchListAV(APIView):
     def get(self, request):
@@ -48,7 +71,7 @@ class WatchllistDetailsAV(APIView):
     def put(self, request, pk):
         movies = Watchlist.objects.get(pk=pk)
         # in order to update u need to pass the id so respective value is updated
-        serializer = WatchlistSerializer(Watchlists, request.data)
+        serializer = WatchlistSerializer(movies, request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

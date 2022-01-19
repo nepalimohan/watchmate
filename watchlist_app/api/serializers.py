@@ -8,7 +8,7 @@ class StreamPlatformSerializer(serializers.ModelSerializer):
 
 class WatchlistSerializer(serializers.ModelSerializer):
     #SerializerMethodField helps to add a serializer method without updating the model or any other fields
-    len_name = serializers.SerializerMethodField()
+    # len_name = serializers.SerializerMethodField()
     
     class Meta:
         model = Watchlist
