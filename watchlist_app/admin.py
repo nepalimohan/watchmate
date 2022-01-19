@@ -1,6 +1,6 @@
 from django.contrib import admin
-from watchlist_app.models import Movie
+from watchlist_app.models import Watchlist
 
-@admin.register(Movie)
-class MovieModelAdmin(admin.ModelAdmin):
+@admin.register(Watchlist)
+class WatchllistModelAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'description','active']
