@@ -9,9 +9,23 @@ from watchlist_app.models import Watchlist, StreamPlatform, Reviews
 from watchlist_app.api.serializers import WatchlistSerializer, StreamPlatformSerializer, ReviewSerializer
 from django.http import JsonResponse
 
-class ReviewList(generics.ListCreateAPIView):
-    queryset = Reviews.objects.all()
+class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
+    
+    def perform_create(self, serializer):
+        pk = self.kwargs['pk']
+        watchlist = Watchlist.objects.get(pk=pk)
+        
+        serializer.save(watchlist=watchlist)
+
+class ReviewList(generics.ListAPIView):
+    # queryset = Reviews.objects.all()
+    serializer_class = ReviewSerializer
+    
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        return Reviews.objects.filter(watchlist=pk) #this watchlist came from line 16 models.py
+    
     
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Reviews.objects.all()

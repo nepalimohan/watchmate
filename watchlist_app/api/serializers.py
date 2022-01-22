@@ -4,7 +4,8 @@ from watchlist_app.models import Watchlist, StreamPlatform, Reviews
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reviews
-        fields = "__all__"
+        # fields = "__all__"
+        exclude = ("watchlist",)
 
 class WatchlistSerializer(serializers.ModelSerializer):
     #SerializerMethodField helps to add a serializer method without updating the model or any other fields
