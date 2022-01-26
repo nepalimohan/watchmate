@@ -165,7 +165,7 @@ class WatchllistDetailsAV(APIView):
         movies = Watchlist.objects.get(pk=pk)
         movies.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+        
 
     
     
