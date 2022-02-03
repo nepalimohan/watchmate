@@ -11,7 +11,7 @@ class StreamPlatformAdmin(admin.ModelAdmin):
     
 @admin.register(Reviews)
 class ReviewsModelAdmin(admin.ModelAdmin):
-    list_display = ['id', 'rating', 'description','watchlist','active','created','update']
+    list_display = ['id','review_user','rating', 'description','watchlist','active','created','update']
 
-# admin.site.register(Watchlist)
+# admin.site.register(Reviews)
 # admin.site.register(StreamPlatform)
