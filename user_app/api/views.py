@@ -3,9 +3,9 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from rest_framework_simplejwt.tokens import RefreshToken
+# from rest_framework_simplejwt.tokens import RefreshToken
 from user_app.api.serializers import RegistrationSerializer
-# from user_app import models #this model is used for creating token automatically
+from user_app import models #this model is used for creating token automatically
 #for auto token to be created you need to import models.py
 
 # class RegistrationView(APIView):
@@ -34,15 +34,16 @@ def registration_view(request):
             data['username'] = account.username
             data['email'] = account.email
             
-            # token = Token.objects.get(user=account).key
-            # data['token'] = token
+            token = Token.objects.get(user=account).key
+            data['token'] = token
             
-            refresh = RefreshToken.for_user(account)
+            # refresh = RefreshToken.for_user(account)
             
-            data['token'] = {
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }
+            #JWT token generation mannually
+            # data['token'] = {
+            #     'refresh': str(refresh),
+            #     'access': str(refresh.access_token),
+            # }
             
             
         else:
