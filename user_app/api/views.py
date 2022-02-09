@@ -44,8 +44,6 @@ def registration_view(request):
             #     'refresh': str(refresh),
             #     'access': str(refresh.access_token),
             # }
-            
-            
         else:
             data =  serializers.errors  
         return Response(data)
