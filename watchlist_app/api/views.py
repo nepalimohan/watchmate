@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, ScopedRateThrottle
 # from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework import status
@@ -14,10 +14,12 @@ from watchlist_app.models import Watchlist, StreamPlatform, Reviews
 from watchlist_app.api.serializers import WatchlistSerializer, StreamPlatformSerializer, ReviewSerializer
 from django.http import JsonResponse
 from watchlist_app.api.permissions import IsAdminorReadOnly, IsReviewUserOrReadOnly
+from watchlist_app.api.throttling import ReviewCreateThrottle, ReviewListThrottle, ReviewDetailThrottle
 
 class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [ReviewCreateThrottle]
     
     def get_queryset(self): #assertion error came when queryset was not overridden
         return Reviews.objects.all()
@@ -43,9 +45,10 @@ class ReviewCreate(generics.CreateAPIView):
         serializer.save(watchlist=watchlist, review_user=review_user)
 
 class ReviewList(generics.ListAPIView):
-    # queryset = Reviews.objects.all()
+    # queryset = Reviews.objects.all() this statement is being overridden by get_queryset below
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+    throttle_classes = [ReviewListThrottle]
     
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -56,7 +59,9 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Reviews.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsReviewUserOrReadOnly]
-    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'review-datail'
+    
 
 # class ReviewDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
 #     queryset = Reviews.objects.all()
