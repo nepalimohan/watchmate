@@ -12,8 +12,9 @@ class ReviewSerializer(serializers.ModelSerializer):
 class WatchlistSerializer(serializers.ModelSerializer):
     #SerializerMethodField helps to add a serializer method without updating the model or any other fields
     # len_name = serializers.SerializerMethodField()
-    reviews = ReviewSerializer(many=True, read_only= True)
+    # reviews = ReviewSerializer(many=True, read_only= True)
     #we cannot add reviews from this serializer because of read only field
+    platform = serializers.CharField(source='platform.name') #overwriting plaform to show name instead of id number
     
     class Meta:
         model = Watchlist

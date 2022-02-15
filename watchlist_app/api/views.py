@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, ScopedRateThrottle
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 # from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework import status
@@ -16,6 +18,21 @@ from django.http import JsonResponse
 from watchlist_app.api.permissions import IsAdminorReadOnly, IsReviewUserOrReadOnly
 from watchlist_app.api.throttling import ReviewCreateThrottle, ReviewListThrottle, ReviewDetailThrottle
 
+class UserReview(generics.ListAPIView):
+     # queryset = Reviews.objects.all() this statement is being overridden by get_queryset below
+    serializer_class = ReviewSerializer
+    # permission_classes = [IsAuthenticated]
+    # throttle_classes = [ReviewListThrottle]
+    
+    # def get_queryset(self): 
+    #     username = self.kwargs['username']
+    #     return Reviews.objects.filter(review_user__username=username)
+    
+    def get_queryset(self): 
+        username = self.request.query_params.get('username')
+        return Reviews.objects.filter(review_user__username=username)
+    
+    
 class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
@@ -49,6 +66,8 @@ class ReviewList(generics.ListAPIView):
     serializer_class = ReviewSerializer
     # permission_classes = [IsAuthenticated]
     throttle_classes = [ReviewListThrottle]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['review_user__username', 'active']
     
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -150,6 +169,14 @@ class StreamPlatformDetailsAV(APIView):
         platform = StreamPlatform.objects.get(pk=pk)
         platform.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class WatchListGV(generics.ListAPIView):
+    queryset = Watchlist.objects.all() #this statement is being overridden by get_queryset below
+    serializer_class = WatchlistSerializer
+    filter_backends = [filters.SearchFilter]
+    # filterset_fields = ['title', 'platform__name']
+    search_fields = ['title', 'platform__name']
+    ordering_fields = ['avg_rating']
 
 class WatchListAV(APIView):
     permission_classes = [IsAdminorReadOnly]
