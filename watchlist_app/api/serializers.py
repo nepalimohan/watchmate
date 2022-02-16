@@ -23,7 +23,6 @@ class WatchlistSerializer(serializers.ModelSerializer):
         # exclude = ['active'] it includes all other fields except exclude field
         
     # def get_len_name(self, object):
-    #     length = len(object.name)
     #     return length
     
     # #object level validation
