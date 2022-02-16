@@ -16,3 +16,5 @@ class WatchlistLimitOffsetPAgination(LimitOffsetPagination):
 class WatchlistCursorPagination(CursorPagination):
     page_size = 3
     ordering = 'created'
+    
+    #pginations works either with viewsets or generic views
