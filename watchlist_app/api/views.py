@@ -17,7 +17,7 @@ from watchlist_app.api.serializers import WatchlistSerializer, StreamPlatformSer
 from django.http import JsonResponse
 from watchlist_app.api.permissions import IsAdminorReadOnly, IsReviewUserOrReadOnly
 from watchlist_app.api.throttling import ReviewCreateThrottle, ReviewListThrottle, ReviewDetailThrottle
-from watchlist_app.api.pagination import WatchlistPagination
+from watchlist_app.api.pagination import WatchlistPagination, WatchlistLimitOffsetPAgination
 
 class UserReview(generics.ListAPIView):
      # queryset = Reviews.objects.all() this statement is being overridden by get_queryset below
@@ -174,7 +174,7 @@ class StreamPlatformDetailsAV(APIView):
 class WatchListGV(generics.ListAPIView):
     queryset = Watchlist.objects.all() #this statement is being overridden by get_queryset below
     serializer_class = WatchlistSerializer
-    pagination_class = WatchlistPagination
+    pagination_class = WatchlistLimitOffsetPAgination
     
     filter_backends = [filters.SearchFilter]
     # filterset_fields = ['title', 'platform__name']
